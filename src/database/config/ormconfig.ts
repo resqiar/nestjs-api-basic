@@ -1,14 +1,13 @@
-import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
-
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 
 const config: PostgresConnectionOptions = {
-    type: 'postgres',
-    host: process.env.POSTGRES_HOST,
+	type: 'postgres',
+	host: '172.17.0.1',
 	port: 5432,
 	username: 'postgres',
 	password: 'admin',
 	database: 'crud_basic_nest',
-	entities: [__dirname + '/**/*.entity{.ts,.js}'],
+	entities: ['dist/**/*.entity{.ts,.js}'],
 
 	// We are using migrations, synchronize should be set to false.
 	synchronize: false,
