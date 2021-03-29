@@ -1,6 +1,15 @@
-export interface UserDTO {
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+
+export class UserDTO {
+	@ApiProperty()
 	username: string
+
+	@ApiProperty()
 	email: string
-	age: number
-	isPaid: boolean
+
+	@ApiPropertyOptional()
+	age?: number
+
+	@ApiPropertyOptional()
+	isPaid?: boolean
 }

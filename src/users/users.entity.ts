@@ -1,24 +1,34 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	PrimaryGeneratedColumn,
+} from 'typeorm'
 
 @Entity()
 export class User {
+	@ApiProperty()
+	@PrimaryGeneratedColumn('uuid')
+	_id: number
 
-    @PrimaryGeneratedColumn('uuid')
-    _id: number;
+	@ApiProperty()
+	@Column()
+	username: string
 
-    @Column()
-    username: string;
-    
-    @Column()
-    email: string;
+	@ApiProperty()
+	@Column()
+	email: string
 
-    @Column({ nullable: true, default: "18" })
-    age: number;
+	@ApiPropertyOptional()
+	@Column({ nullable: true, default: '18' })
+	age: number
 
-    @Column({ nullable: true, default: false})
-    isPaid: boolean;
+	@ApiPropertyOptional()
+	@Column({ nullable: true, default: false })
+	isPaid: boolean
 
-    @CreateDateColumn()
-    createdAt: Date;
-
+	@ApiProperty()
+	@CreateDateColumn()
+	createdAt: Date
 }

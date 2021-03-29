@@ -37,5 +37,6 @@ export class UsersService {
 
 	async destroy(id: string) {
 		await this.UserRepository.delete(id)
+		return { status: 'deleted' }
 	}
 }

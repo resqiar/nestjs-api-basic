@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { UsersModule } from './users/users.module'
 import { DatabaseModule } from './database/database.module'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
@@ -9,9 +7,7 @@ import { LoggingInterceptor } from './shared/logging.interceptor'
 
 @Module({
 	imports: [UsersModule, DatabaseModule],
-	controllers: [AppController],
 	providers: [
-		AppService,
     /**
      * This providers is going to filter
      * All error that happens on API call
