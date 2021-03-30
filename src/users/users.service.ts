@@ -16,12 +16,17 @@ export class UsersService {
 		@InjectRepository(User) private UserRepository: Repository<User>
 	) {}
 
-	async show() {
+	async show(username: string) {
+		if (username) {
+			return await this.UserRepository.find({
+				where: { username: username },
+			})
+		}
 		return await this.UserRepository.find()
 	}
 
-	async get(id: string) {
-		return await this.UserRepository.findByIds([id])
+	async get(email: string) {
+		return await this.UserRepository.findOne({ where: { email: email } })
 	}
 
 	async create(data: UserDTO) {
