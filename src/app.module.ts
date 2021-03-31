@@ -4,9 +4,10 @@ import { DatabaseModule } from './database/database.module'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { HttpErrorFilter } from './shared/http-error.filter'
 import { LoggingInterceptor } from './shared/logging.interceptor'
+import { PostsModule } from './posts/posts.module';
 
 @Module({
-	imports: [UsersModule, DatabaseModule],
+	imports: [UsersModule, DatabaseModule, PostsModule],
 	providers: [
     /**
      * This providers is going to filter

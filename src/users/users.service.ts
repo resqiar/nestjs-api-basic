@@ -46,15 +46,11 @@ export class UsersService {
 
 	async update(id: string, data: Partial<UserDTO>) {
 		try {
-			await this.UserRepository.findOneOrFail({
-				where: { _id: id },
-			})
+			await this.UserRepository.findOneOrFail(id)
 
 			await this.UserRepository.update(id, data)
 
-			return await this.UserRepository.findOneOrFail({
-				where: { _id: id },
-			})
+			return await this.UserRepository.findOneOrFail(id)
 		} catch (e) {
 			/**
 			 * If there is no corresponding user
@@ -66,10 +62,7 @@ export class UsersService {
 
 	async destroy(id: string) {
 		try {
-			await this.UserRepository.findOneOrFail({
-				where: { _id: id },
-			})
-
+			await this.UserRepository.findOneOrFail(id)
 			return await this.UserRepository.delete(id)
 		} catch (e) {
 			/**

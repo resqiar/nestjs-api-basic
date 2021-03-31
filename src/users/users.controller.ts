@@ -5,6 +5,7 @@ import {
 	Get,
 	NotFoundException,
 	Param,
+	Patch,
 	Post,
 	Put,
 	Query,
@@ -71,7 +72,7 @@ export class UsersController {
 	 */
 	@ApiOkResponse({ type: User, isArray: true, status: 200 })
 	@UsePipes(new ValidationPipe())
-	@Put('update/:id')
+	@Patch('update/:id')
 	async editUser(
 		@Param('id') id: string,
 		@Body() data: Partial<UserDTO>
@@ -84,6 +85,7 @@ export class UsersController {
 	 * @URL users/update/:id
 	 */
 	@ApiOkResponse({ type: Object, status: 200 })
+	@UsePipes(new ValidationPipe())
 	@Delete('delete/:id')
 	async deleteUser(@Param('id') id: string): Promise<{}> {
 		return await this.usersService.destroy(id)
