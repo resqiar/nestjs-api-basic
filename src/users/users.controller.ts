@@ -8,6 +8,7 @@ import {
 	Post,
 	Put,
 	Query,
+	UsePipes,
 } from '@nestjs/common'
 import {
 	ApiCreatedResponse,
@@ -16,6 +17,7 @@ import {
 	ApiQuery,
 	ApiTags,
 } from '@nestjs/swagger'
+import { ValidationPipe } from 'src/shared/validation.pipe'
 import { UserDTO } from './dto/users.dto'
 import { User } from './entities/users.entity'
 import { UsersService } from './users.service'
@@ -57,6 +59,7 @@ export class UsersController {
 	 * @URL users/register
 	 */
 	@ApiCreatedResponse({ type: User })
+	@UsePipes(new ValidationPipe())
 	@Post('register')
 	async registerUser(@Body() data: UserDTO): Promise<User> {
 		return await this.usersService.create(data)
@@ -67,6 +70,7 @@ export class UsersController {
 	 * @URL users/update/:id
 	 */
 	@ApiOkResponse({ type: User, isArray: true, status: 200 })
+	@UsePipes(new ValidationPipe())
 	@Put('update/:id')
 	async editUser(
 		@Param('id') id: string,

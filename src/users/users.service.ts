@@ -26,54 +26,57 @@ export class UsersService {
 	}
 
 	async get(email: string) {
-		const user = await this.UserRepository.findOne({
-			where: { email: email },
-		})
-		/**
-		 * If there is no available user
-		 * Throw NotFoundException error
-		 */
-		if (!user) throw new NotFoundException()
-		/**
-		 * If user exist?
-		 * Return those array of users
-		 */
-		return user
+		try {
+			return await this.UserRepository.findOneOrFail({
+				where: { email: email },
+			})
+		} catch (e) {
+			/**
+			 * If there is no available user
+			 * Throw NotFoundException error
+			 */
+			throw new NotFoundException()
+		}
 	}
 
 	async create(data: UserDTO) {
 		const user = this.UserRepository.create(data)
-		await this.UserRepository.save(user)
-		return user
+		return await this.UserRepository.save(user)
 	}
 
 	async update(id: string, data: Partial<UserDTO>) {
-		const user = await this.UserRepository.findOne({ where: { _id: id } })
-		/**
-		 * If there is no available user
-		 * Throw NotFoundException error
-		 */
-		if (!user) throw new NotFoundException()
-		/**
-		 * If user exist?
-		 * Return result
-		 */
-		await this.UserRepository.update(id, data)
-		return user
+		try {
+			await this.UserRepository.findOneOrFail({
+				where: { _id: id },
+			})
+
+			await this.UserRepository.update(id, data)
+
+			return await this.UserRepository.findOneOrFail({
+				where: { _id: id },
+			})
+		} catch (e) {
+			/**
+			 * If there is no corresponding user
+			 * Throw NotFoundException error
+			 */
+			throw new NotFoundException()
+		}
 	}
 
 	async destroy(id: string) {
-		const user = await this.UserRepository.findOne({ where: { _id: id } })
-		/**
-		 * If there is no available user
-		 * Throw NotFoundException error
-		 */
-		if (!user) throw new NotFoundException()
-		/**
-		 * If user exist?
-		 * Return result
-		 */
-		await this.UserRepository.delete(id)
-		return { user: user, status: 'deleted' }
+		try {
+			await this.UserRepository.findOneOrFail({
+				where: { _id: id },
+			})
+
+			return await this.UserRepository.delete(id)
+		} catch (e) {
+			/**
+			 * If there is no corresponding user
+			 * Throw NotFoundException error
+			 */
+			throw new NotFoundException()
+		}
 	}
 }
