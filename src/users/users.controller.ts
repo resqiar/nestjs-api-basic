@@ -16,8 +16,8 @@ import {
 	ApiQuery,
 	ApiTags,
 } from '@nestjs/swagger'
-import { UserDTO } from './users.dto'
-import { User } from './users.entity'
+import { UserDTO } from './dto/users.dto'
+import { User } from './entities/users.entity'
 import { UsersService } from './users.service'
 
 @ApiTags('users')
@@ -49,17 +49,7 @@ export class UsersController {
 	@ApiNotFoundResponse()
 	@Get('profile/:email')
 	async getUserProfile(@Param('email') email: string): Promise<User> {
-		const user = await this.usersService.get(email)
-		/**
-		 * If there is no available user
-		 * Throw NotFoundException error
-		 */
-		if (!user) throw new NotFoundException()
-		/**
-		 * If user exist?
-		 * Return those array of users
-		 */
-		return user
+		return await this.usersService.get(email) 
 	}
 
 	/**
@@ -81,7 +71,7 @@ export class UsersController {
 	async editUser(
 		@Param('id') id: string,
 		@Body() data: Partial<UserDTO>
-	): Promise<User[]> {
+	): Promise<User> {
 		return await this.usersService.update(id, data)
 	}
 

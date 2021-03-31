@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { UserDTO } from './users.dto'
-import { User } from './users.entity'
+import { UserDTO } from './dto/users.dto'
+import { User } from './entities/users.entity'
 
 @Injectable()
 export class UsersService {
@@ -26,7 +26,19 @@ export class UsersService {
 	}
 
 	async get(email: string) {
-		return await this.UserRepository.findOne({ where: { email: email } })
+		const user = await this.UserRepository.findOne({
+			where: { email: email },
+		})
+		/**
+		 * If there is no available user
+		 * Throw NotFoundException error
+		 */
+		if (!user) throw new NotFoundException()
+		/**
+		 * If user exist?
+		 * Return those array of users
+		 */
+		return user
 	}
 
 	async create(data: UserDTO) {
@@ -36,12 +48,32 @@ export class UsersService {
 	}
 
 	async update(id: string, data: Partial<UserDTO>) {
+		const user = await this.UserRepository.findOne({ where: { _id: id } })
+		/**
+		 * If there is no available user
+		 * Throw NotFoundException error
+		 */
+		if (!user) throw new NotFoundException()
+		/**
+		 * If user exist?
+		 * Return result
+		 */
 		await this.UserRepository.update(id, data)
-		return await this.UserRepository.findByIds([id])
+		return user
 	}
 
 	async destroy(id: string) {
+		const user = await this.UserRepository.findOne({ where: { _id: id } })
+		/**
+		 * If there is no available user
+		 * Throw NotFoundException error
+		 */
+		if (!user) throw new NotFoundException()
+		/**
+		 * If user exist?
+		 * Return result
+		 */
 		await this.UserRepository.delete(id)
-		return { status: 'deleted' }
+		return { user: user, status: 'deleted' }
 	}
 }
