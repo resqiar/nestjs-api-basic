@@ -8,7 +8,6 @@ import {
 	Patch,
 	Post,
 	Query,
-	Request,
 	UseGuards,
 	UseInterceptors,
 	UsePipes,
@@ -20,7 +19,7 @@ import {
 	ApiQuery,
 	ApiTags,
 } from '@nestjs/swagger'
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard'
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard'
 import { ValidationPipe } from 'src/shared/pipes/validation.pipe'
 import { UserDTO } from './dto/users.dto'
 import { User } from './entities/users.entity'
@@ -36,19 +35,6 @@ import { UsersService } from './users.service'
 @Controller('users')
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
-
-	/**
-	 * Get all users available in database
-	 * return array of user
-	 * @URL users/
-	 * @Filter username | age | isPaid | email
-	 */
-	@ApiOkResponse({ type: User, status: 200 })
-	@UseGuards(LocalAuthGuard)
-	@Post('login')
-	async login(@Request() req: any) {
-		return req.user
-	}
 
 	/**
 	 * Get all users available in database
@@ -93,6 +79,7 @@ export class UsersController {
 	 * @URL users/update/:id
 	 */
 	@ApiOkResponse({ type: User, isArray: true, status: 200 })
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	@Patch('update/:id')
 	async editUser(
@@ -107,6 +94,7 @@ export class UsersController {
 	 * @URL users/update/:id
 	 */
 	@ApiOkResponse({ type: Object, status: 200 })
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	@Delete('delete/:id')
 	async deleteUser(@Param('id') id: string): Promise<{}> {
