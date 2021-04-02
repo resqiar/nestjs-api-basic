@@ -1,5 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import * as bcrypt from 'bcrypt'
+import { username } from 'src/database/config/ormconfig'
 import { Repository } from 'typeorm'
 import { UserDTO } from './dto/users.dto'
 import { User } from './entities/users.entity'
@@ -25,10 +32,10 @@ export class UsersService {
 		return await this.UserRepository.find()
 	}
 
-	async get(email: string) {
+	async get(username: string) {
 		try {
 			return await this.UserRepository.findOneOrFail({
-				where: { email: email },
+				where: { username: username },
 			})
 		} catch (e) {
 			/**
@@ -40,8 +47,20 @@ export class UsersService {
 	}
 
 	async create(data: UserDTO) {
-		const user = this.UserRepository.create(data)
-		return await this.UserRepository.save(user)
+		try {
+			const user = this.UserRepository.create(data)
+			return await this.UserRepository.save(user)
+		} catch (e) {
+			/**
+			 * If username doubled/already taken,
+			 * Throw BadRequestException error
+			 */
+			if (/(duplicate)[\s\S]+(key value)/.test(e.message)) {
+				throw new BadRequestException(
+					`Username ${data.username} has already taken by another user`
+				)
+			}
+		}
 	}
 
 	async update(id: string, data: Partial<UserDTO>) {

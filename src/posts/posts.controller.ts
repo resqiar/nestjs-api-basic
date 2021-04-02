@@ -12,7 +12,7 @@ import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
-import { ValidationPipe } from 'src/shared/validation.pipe'
+import { ValidationPipe } from 'src/shared/pipes/validation.pipe'
 import { Posts } from './entities/post.entity'
 
 @ApiTags('posts')

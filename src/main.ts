@@ -11,12 +11,22 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
 	/**
+	 * This global prefix very useful to remove
+	 * Redundant adding prefix in every single
+	 * Controller routes
+	 * @Example /api/v1 | /api/v2 | /tmdb/api
+	 */
+	app.setGlobalPrefix('/api')
+
+	/**
 	 * Swagger Configuration
 	 */
 	const swaggerConfig = new DocumentBuilder()
 		.setTitle('Basic NestJS API Documentation')
-    .setDescription('Basic crud operation powered by NestJS, Postgres, GraphQL, and WebSocket')
-    .setVersion('Beta')
+		.setDescription(
+			'Basic crud operation powered by NestJS, Postgres, GraphQL, and WebSocket'
+		)
+		.setVersion('Beta')
 		.setLicense('MIT', 'https://opensource.org/licenses/MIT')
 		.build()
 

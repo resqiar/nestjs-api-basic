@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Exclude } from 'class-transformer'
 import {
+	BeforeInsert,
 	Column,
 	CreateDateColumn,
 	Entity,
@@ -13,12 +15,13 @@ export class User {
 	_id: number
 
 	@ApiProperty()
-	@Column()
+	@Column({ unique: true })
 	username: string
 
 	@ApiProperty()
-	@Column()
-	email: string
+	@Column('text')
+	@Exclude()
+	password: string
 
 	@ApiPropertyOptional()
 	@Column({ nullable: true, default: '18' })
@@ -26,6 +29,7 @@ export class User {
 
 	@ApiPropertyOptional()
 	@Column({ nullable: true, default: false })
+	@Exclude()
 	isPaid: boolean
 
 	@ApiProperty()

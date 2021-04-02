@@ -1,14 +1,16 @@
 import {
 	Body,
+	ClassSerializerInterceptor,
 	Controller,
 	Delete,
 	Get,
-	NotFoundException,
 	Param,
 	Patch,
 	Post,
-	Put,
 	Query,
+	Request,
+	UseGuards,
+	UseInterceptors,
 	UsePipes,
 } from '@nestjs/common'
 import {
@@ -18,15 +20,35 @@ import {
 	ApiQuery,
 	ApiTags,
 } from '@nestjs/swagger'
-import { ValidationPipe } from 'src/shared/validation.pipe'
+import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard'
+import { ValidationPipe } from 'src/shared/pipes/validation.pipe'
 import { UserDTO } from './dto/users.dto'
 import { User } from './entities/users.entity'
 import { UsersService } from './users.service'
 
 @ApiTags('users')
+/**
+ * Interceptors below had a job to
+ * Remove sensitive information to client
+ * @Removed Password | IsPaid
+ */
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
+
+	/**
+	 * Get all users available in database
+	 * return array of user
+	 * @URL users/
+	 * @Filter username | age | isPaid | email
+	 */
+	@ApiOkResponse({ type: User, status: 200 })
+	@UseGuards(LocalAuthGuard)
+	@Post('login')
+	async login(@Request() req: any) {
+		return req.user
+	}
 
 	/**
 	 * Get all users available in database
@@ -50,9 +72,9 @@ export class UsersController {
 	 */
 	@ApiOkResponse({ type: User, isArray: true, status: 200 })
 	@ApiNotFoundResponse()
-	@Get('profile/:email')
-	async getUserProfile(@Param('email') email: string): Promise<User> {
-		return await this.usersService.get(email) 
+	@Get('profile/:username')
+	async getUserProfile(@Param('username') username: string): Promise<User> {
+		return await this.usersService.get(username)
 	}
 
 	/**

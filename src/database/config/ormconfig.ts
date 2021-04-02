@@ -10,13 +10,14 @@ const config: PostgresConnectionOptions = {
 	entities: ['dist/**/*.entity{.ts,.js}'],
 
 	// We are using migrations, synchronize should be set to false.
-	synchronize: false,
+	synchronize: true,
 
 	// Run migrations automatically,
 	// you can disable this if you prefer running migration manually.
-	// migrationsRun: false,
+	// migrationsRun: true,
 	// logging: true,
 	// logger: 'file',
+	subscribers: ['dist/subscribers/*.js'],
 
 	// Allow both start:prod and start:dev to use migrations
 	// __dirname is either dist or src folder, meaning either
