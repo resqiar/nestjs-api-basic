@@ -1,9 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { type } from 'src/database/config/ormconfig'
+import { User } from 'src/users/entities/users.entity'
 import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	ManyToOne,
 	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from 'typeorm'
 
 @Entity()
@@ -24,7 +28,12 @@ export class Posts {
 	@Column({ nullable: true, default: false })
 	isVerified: boolean
 
-    @ApiProperty()
 	@CreateDateColumn()
 	createdAt: Date
+
+	@UpdateDateColumn()
+	updatedAt: Date
+
+	@ManyToOne(type => User, (author: User) => author._id)
+	author: User
 }

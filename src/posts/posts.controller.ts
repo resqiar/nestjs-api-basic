@@ -7,6 +7,8 @@ import {
 	Param,
 	Delete,
 	UsePipes,
+	UseGuards,
+	Request,
 } from '@nestjs/common'
 import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
@@ -14,6 +16,7 @@ import { UpdatePostDto } from './dto/update-post.dto'
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { ValidationPipe } from 'src/shared/pipes/validation.pipe'
 import { Posts } from './entities/post.entity'
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard'
 
 @ApiTags('posts')
 @Controller('posts')
@@ -26,9 +29,10 @@ export class PostsController {
 	 */
 	@ApiCreatedResponse({ type: Posts })
 	@Post('create')
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
-	async create(@Body() createPostDto: CreatePostDto): Promise<Posts> {
-		return this.postsService.create(createPostDto)
+	async create(@Body() createPostDto: CreatePostDto, @Request() req: any): Promise<Posts> {
+		return this.postsService.create(createPostDto, req.user)
 	}
 
 	/**
@@ -57,6 +61,7 @@ export class PostsController {
 	 */
 	@ApiOkResponse({ type: Posts })
 	@Patch(':id')
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	async update(
 		@Param('id') id: string,
@@ -71,6 +76,7 @@ export class PostsController {
 	 */
 	@ApiOkResponse({ type: Object })
 	@Delete(':id')
+	@UseGuards(JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
 	async remove(@Param('id') id: string): Promise<{}> {
 		return this.postsService.remove(id)

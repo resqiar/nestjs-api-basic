@@ -3,7 +3,6 @@ import { UsersService } from 'src/users/users.service'
 
 import * as bcrypt from 'bcrypt'
 import { User } from 'src/users/entities/users.entity'
-import { username } from 'src/database/config/ormconfig'
 import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
@@ -15,12 +14,13 @@ export class AuthService {
 
 	async validateUser(username: string, password: string): Promise<User> {
 		const user = await this.usersService.get(username)
+		const hashedPassword = await this.usersService.getUserPasswordCred(username)
 
 		/**
 		 * Compare Input Password with Hashed Password
 		 * Using bcrypt
 		 */
-		const isValid = await bcrypt.compare(password, user.password)
+		const isValid = await bcrypt.compare(password, hashedPassword.password)
 
 		/**
 		 * If password matches with hashed password,

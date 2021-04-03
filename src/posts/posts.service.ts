@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { User } from 'src/users/entities/users.entity'
 import { Repository } from 'typeorm'
 import { CreatePostDto } from './dto/create-post.dto'
 import { UpdatePostDto } from './dto/update-post.dto'
@@ -15,16 +16,25 @@ export class PostsService {
 	 */
 	constructor(
 		@InjectRepository(Posts)
-		private readonly PostRepository: Repository<Posts>
+		private readonly PostRepository: Repository<Posts>,
+		@InjectRepository(User)
+		private readonly UserRepository: Repository<User>
 	) {}
 
-	async create(createPostDto: CreatePostDto) {
-		const post = this.PostRepository.create(createPostDto)
+	async create(createPostDto: CreatePostDto, user: User) {
+		const post = this.PostRepository.create({
+			...createPostDto,
+			/**
+			 * author comes from a relationship
+			 * between @Posts and @User table
+			 */
+			author: user
+		})
 		return await this.PostRepository.save(post)
 	}
 
 	async findAll() {
-		return await this.PostRepository.find()
+		return await this.PostRepository.find({ relations: ['author'] })
 	}
 
 	async findOne(id: string) {

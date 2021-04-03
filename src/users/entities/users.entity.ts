@@ -1,10 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Exclude } from 'class-transformer'
+import { type } from 'src/database/config/ormconfig'
+import { Posts } from 'src/posts/entities/post.entity'
 import {
 	BeforeInsert,
 	Column,
 	CreateDateColumn,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm'
 
@@ -19,7 +22,7 @@ export class User {
 	username: string
 
 	@ApiProperty()
-	@Column('text')
+	@Column({select: false, type: 'text'})
 	@Exclude()
 	password: string
 
@@ -35,4 +38,7 @@ export class User {
 	@ApiProperty()
 	@CreateDateColumn()
 	createdAt: Date
+
+	@OneToMany(type => Posts, (post: Posts) => post.author)
+	posts: Posts[]
 }

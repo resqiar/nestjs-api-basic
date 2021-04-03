@@ -29,7 +29,22 @@ export class UsersService {
 				where: { username: username },
 			})
 		}
-		return await this.UserRepository.find()
+		return await this.UserRepository.find({ relations: ['posts']})
+	}
+
+	async getUserPasswordCred(username: string) {
+		try {
+			return await this.UserRepository.findOneOrFail({
+				where: { username: username },
+				select: ['password']
+			})
+		} catch (e) {
+			/**
+			 * If there is no available user
+			 * Throw NotFoundException error
+			 */
+			throw new NotFoundException()
+		}
 	}
 
 	async get(username: string) {
